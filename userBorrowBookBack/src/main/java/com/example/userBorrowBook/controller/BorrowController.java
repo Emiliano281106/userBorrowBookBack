@@ -25,6 +25,12 @@ public class BorrowController {
     private BorrowRepository borrowRepository;
 
     @GetMapping
+    public ResponseEntity<List<Borrow>> getAllBorrows() {
+        List<Borrow> borrows = borrowRepository.findAll();
+        return ResponseEntity.ok(borrows);
+    }
+
+    @GetMapping("/filter")
     //@Transactional // Add transaction to ensure lazy-loaded entities are initialized
     public ResponseEntity<List<Borrow>> filterBorrows(
             @RequestParam(required = false) String bookTitle,
@@ -38,12 +44,6 @@ public class BorrowController {
         List<Borrow> borrows = borrowRepository.findAll(BorrowSpecification.filterByParameters(
                 bookTitle, isbn, available, userAge, archived, dob, returned
         ));
-
-        // Initialize lazy-loaded relationships to avoid serialization issues
-       /* borrows.forEach(borrow -> {
-            borrow.getBook().getTitle(); // Force initialization of book
-            borrow.getUser().getUserAppName(); // Force initialization of user
-        });*/
 
         return ResponseEntity.ok(borrows);
     }

@@ -2,8 +2,10 @@ package com.example.userBorrowBook.controller;
 
 import com.example.userBorrowBook.model.Book;
 import com.example.userBorrowBook.repository.BookRepository;
+import com.example.userBorrowBook.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +21,23 @@ public class BookController {
 
     @Autowired
     private BookRepository bookRepository;
+    private final BookService bookService;
 
+    @Autowired
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
+    }
     @GetMapping
     public ResponseEntity<List<Book>> getAllBooks() {
         List<Book> books = bookRepository.findAll();
         return new ResponseEntity<>(books, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/page/{pageNo}")
+    public Page<Book> getBooksPaginated(@PathVariable int pageNo) {
+        final int PAGE_SIZE = 5;
+        return bookService.findPaginated(pageNo, PAGE_SIZE);
     }
 
     @GetMapping("/{id}")
