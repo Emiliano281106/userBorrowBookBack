@@ -41,6 +41,10 @@ public class BorrowController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dob,
             @RequestParam(required = false) Boolean returned
     ) {
+        // communicate repo with h2
+        // to create dynamic queries
+        // by the implementation of BorrowSpecification
+        // to avoid boilerplate native sql
         List<Borrow> borrows = borrowRepository.findAll(BorrowSpecification.filterByParameters(
                 bookTitle, isbn, available, userAge, archived, dob, returned
         ));
